@@ -4,6 +4,7 @@ import { dark } from '@clerk/themes'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
 import { Toaster } from 'sonner'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const inter = Inter({ 
@@ -47,6 +48,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <Toaster position="bottom-right" />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
