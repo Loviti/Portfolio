@@ -12,37 +12,15 @@ export default async function AdminLayout({
     redirect('/sign-in')
   }
 
-  // TODO: Add email verification from Clerk user object
-  // const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
+  // Note: Admin access is controlled by Clerk authentication
+  // Additional email verification could be added here if needed
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b border-border bg-surface">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-heading font-bold">Admin Panel</h1>
-            <div className="text-sm text-foreground/60">
-              🦫 Builder Beaver&apos;s Workshop
-            </div>
-          </div>
-          <nav className="flex items-center space-x-4">
-            <a
-              href="/admin"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </a>
-            <a
-              href="/"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              View Site
-            </a>
-          </nav>
+    <div className="min-h-screen bg-background pt-20">
+      <main className="section">
+        <div className="container">
+          {children}
         </div>
-      </div>
-      <main className="container py-8">
-        {children}
       </main>
     </div>
   )

@@ -7,31 +7,36 @@ import Link from 'next/link'
 
 export default function AdminDashboard() {
   return (
-    <div className="space-y-8">
+    <div className="max-w-6xl mx-auto space-y-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-heading font-bold">Projects</h1>
-          <p className="text-foreground/70">
-            Manage your portfolio projects
-          </p>
+      <div className="bg-surface rounded-2xl p-8 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-heading font-bold text-foreground mb-2">Projects</h1>
+            <p className="text-foreground/70 text-lg">
+              Manage your portfolio projects with ease
+            </p>
+          </div>
+          <Button 
+            asChild 
+            className="bg-accent-alt hover:bg-accent-alt/90 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:scale-105"
+          >
+            <Link href="/admin/projects/new">
+              <Plus className="w-5 h-5 mr-2" />
+              New Project
+            </Link>
+          </Button>
         </div>
-        <Button asChild className="btn-primary">
-          <Link href="/admin/projects/new">
-            <Plus className="w-4 h-4 mr-2" />
-            New Project
-          </Link>
-        </Button>
-      </div>
 
-      {/* Search and Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground/40 w-4 h-4" />
-          <Input
-            placeholder="Search projects..."
-            className="pl-10"
-          />
+        {/* Search and Filters */}
+        <div className="mt-6 flex items-center space-x-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-foreground/40 w-5 h-5" />
+            <Input
+              placeholder="Search projects..."
+              className="pl-12 h-12 bg-background border-0 rounded-xl text-base"
+            />
+          </div>
         </div>
       </div>
 
@@ -45,15 +50,15 @@ export default function AdminDashboard() {
 
 function ProjectListSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="p-6 bg-surface border border-border rounded-lg">
-          <div className="animate-pulse space-y-3">
-            <div className="h-4 bg-foreground/10 rounded w-1/4"></div>
-            <div className="h-3 bg-foreground/10 rounded w-3/4"></div>
-            <div className="flex space-x-2">
-              <div className="h-6 bg-foreground/10 rounded w-16"></div>
-              <div className="h-6 bg-foreground/10 rounded w-20"></div>
+        <div key={i} className="p-8 bg-surface rounded-2xl shadow-sm">
+          <div className="animate-pulse space-y-4">
+            <div className="h-6 bg-foreground/10 rounded-xl w-1/4"></div>
+            <div className="h-4 bg-foreground/10 rounded-lg w-3/4"></div>
+            <div className="flex space-x-3">
+              <div className="h-8 bg-foreground/10 rounded-full w-20"></div>
+              <div className="h-8 bg-foreground/10 rounded-full w-24"></div>
             </div>
           </div>
         </div>

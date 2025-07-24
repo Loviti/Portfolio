@@ -54,7 +54,7 @@ export default async function Footer() {
             {userId ? (
               <Link
                 href="/admin"
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 hover:bg-primary/30 transition-colors group"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-alt/20 hover:bg-accent-alt/30 transition-colors group"
                 aria-label="Admin Panel"
               >
                 <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />

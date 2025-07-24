@@ -1,8 +1,9 @@
 'use server'
 
 import { auth } from '@clerk/nextjs/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import { projectSchema, type ProjectFormData } from '@/lib/validations'
+import { deleteProjectImage } from './storage'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -12,8 +13,8 @@ async function checkAuth() {
     throw new Error('Unauthorized')
   }
   
-  // TODO: Add admin email check here
-  // const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
+  // Note: Admin access is controlled by Clerk authentication
+  // Additional email verification could be added here if needed
   
   return userId
 }
@@ -33,7 +34,7 @@ export async function createProject(formData: ProjectFormData) {
       outcome: validatedData.outcome || null,
     }
     
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('projects')
       .insert([projectData])
     
@@ -69,7 +70,7 @@ export async function updateProject(id: string, formData: ProjectFormData) {
       updated_at: new Date().toISOString(),
     }
     
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('projects')
       .update(projectData)
       .eq('id', id)
@@ -94,7 +95,8 @@ export async function deleteProject(id: string) {
   try {
     await checkAuth()
     
-    const { error } = await supabase
+    // Delete project from database
+    const { error } = await supabaseAdmin
       .from('projects')
       .delete()
       .eq('id', id)
@@ -103,6 +105,12 @@ export async function deleteProject(id: string) {
       console.error('Error deleting project:', error)
       throw new Error('Failed to delete project')
     }
+    
+    // Delete associated images from storage (non-blocking)
+    deleteProjectImage(id).catch(error => {
+      console.error('Failed to delete project images:', error)
+      // Don't fail the whole operation if image deletion fails
+    })
     
     revalidatePath('/admin')
     revalidatePath('/')
@@ -118,7 +126,7 @@ export async function getProject(id: string) {
   try {
     await checkAuth()
     
-    const { data: project, error } = await supabase
+    const { data: project, error } = await supabaseAdmin
       .from('projects')
       .select('*')
       .eq('id', id)

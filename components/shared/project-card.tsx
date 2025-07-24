@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ExternalLink, Github, TrendingUp } from 'lucide-react'
@@ -14,6 +14,7 @@ interface ProjectCardProps {
   outcome: string
   githubUrl?: string | null
   liveUrl?: string | null
+  imageUrl?: string | null
   index: number
 }
 
@@ -25,6 +26,7 @@ export default function ProjectCard({
   outcome,
   githubUrl,
   liveUrl,
+  imageUrl,
   index
 }: ProjectCardProps) {
   return (
@@ -36,35 +38,44 @@ export default function ProjectCard({
       whileHover={{ y: -8 }}
       className="group h-full"
     >
-      <Card className="h-full bg-surface border-2 border-border hover:border-primary transition-all duration-300 overflow-hidden card-hover">
+      <div className="h-full bg-surface rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group-hover:-translate-y-2">
         <div className="relative">
           {/* Project Image */}
-          <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent-alt/20 flex items-center justify-center border-b border-border">
-            {/* Placeholder for project image */}
-            <div className="text-center text-foreground/60">
-              <div className="text-4xl mb-2">🖥️</div>
-              <p className="text-sm font-medium">
-                {title}
-                <br />
-                <span className="text-xs">Screenshot Coming Soon</span>
-              </p>
-            </div>
+          <div className="aspect-video bg-gradient-to-br from-accent-alt/20 to-accent-alt/30 flex items-center justify-center overflow-hidden">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={`${title} screenshot`}
+                width={800}
+                height={450}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              /* Placeholder for project image */
+              <div className="text-center text-foreground/60">
+                <div className="text-5xl mb-3">🖥️</div>
+                <p className="text-base font-medium">
+                  {title}
+                  <br />
+                  <span className="text-sm text-foreground/50">Screenshot Coming Soon</span>
+                </p>
+              </div>
+            )}
           </div>
           
           {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="text-center text-white p-4">
-              <p className="text-sm mb-4">{longDescription}</p>
-              <div className="flex gap-2 justify-center">
+          <div className="absolute inset-0 bg-accent-alt/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="text-center text-white p-6">
+              <p className="text-base mb-6 leading-relaxed">{longDescription}</p>
+              <div className="flex gap-3 justify-center">
                 {githubUrl && (
                   <Button
                     size="sm"
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 rounded-xl px-4 py-2"
                     asChild
                   >
                     <a href={githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Github className="w-4 h-4 mr-1" />
+                      <Github className="w-4 h-4 mr-2" />
                       Code
                     </a>
                   </Button>
@@ -72,12 +83,11 @@ export default function ProjectCard({
                 {liveUrl && (
                   <Button
                     size="sm"
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 rounded-xl px-4 py-2"
                     asChild
                   >
                     <a href={liveUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-1" />
+                      <ExternalLink className="w-4 h-4 mr-2" />
                       Demo
                     </a>
                   </Button>
@@ -87,31 +97,35 @@ export default function ProjectCard({
           </div>
         </div>
 
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-heading group-hover:text-primary transition-colors">
-            {title}
-          </CardTitle>
-          <CardDescription className="text-foreground/70">
-            {shortDescription}
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="pt-0 space-y-4">
-          {/* Outcome Badge */}
-          <div className="flex items-center gap-2 p-3 bg-success/10 border border-success/20 rounded-md">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-sm font-medium text-success">{outcome}</span>
+        <div className="p-8 space-y-6">
+          {/* Header */}
+          <div>
+            <h3 className="text-2xl font-heading font-bold group-hover:text-accent-alt transition-colors mb-3">
+              {title}
+            </h3>
+            <p className="text-base text-foreground/80 leading-relaxed">
+              {shortDescription}
+            </p>
           </div>
 
+          {/* Outcome Badge */}
+          {outcome && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <span className="text-sm font-semibold text-green-700">{outcome}</span>
+              </div>
+            </div>
+          )}
+
           {/* Technology Tags */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-foreground/80">Technologies:</h4>
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-foreground/80">Technologies Used:</h4>
             <div className="flex flex-wrap gap-2">
               {technologies.map((tech) => (
                 <Badge
                   key={tech}
-                  variant="secondary"
-                  className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+                  className="text-sm px-3 py-1 bg-accent-alt/10 text-accent-alt border-0 rounded-full font-medium hover:bg-accent-alt/20 transition-colors"
                 >
                   {tech}
                 </Badge>
@@ -120,45 +134,43 @@ export default function ProjectCard({
           </div>
 
           {/* Action Buttons - Bottom */}
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-3 pt-2">
             {githubUrl && (
               <Button
                 size="sm"
-                variant="outline"
-                className="flex-1 group-hover:border-primary group-hover:text-primary transition-colors"
+                className="flex-1 bg-background hover:bg-foreground/5 text-foreground border-0 rounded-xl px-4 py-3 font-medium"
                 asChild
               >
                 <a href={githubUrl} target="_blank" rel="noopener noreferrer">
-                  <Github className="w-4 h-4 mr-1" />
-                  Code
+                  <Github className="w-4 h-4 mr-2" />
+                  View Code
                 </a>
               </Button>
             )}
             {liveUrl && (
               <Button
                 size="sm"
-                className="flex-1 btn-primary"
+                className="flex-1 bg-accent-alt hover:bg-accent-alt/90 text-white border-0 rounded-xl px-4 py-3 font-medium transition-all duration-200 hover:shadow-lg hover:scale-105"
                 asChild
               >
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-1" />
-                  Demo
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Live Demo
                 </a>
               </Button>
             )}
             {!githubUrl && !liveUrl && (
               <Button
                 size="sm"
-                variant="outline"
-                className="flex-1"
+                className="flex-1 bg-foreground/5 text-foreground/60 border-0 rounded-xl px-4 py-3 font-medium cursor-not-allowed"
                 disabled
               >
                 Private Project
               </Button>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </motion.div>
   )
 } 

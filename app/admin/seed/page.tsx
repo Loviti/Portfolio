@@ -34,33 +34,32 @@ export default function SeedPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-heading font-bold mb-2">Seed Database</h1>
-        <p className="text-foreground/70">
+    <div className="max-w-3xl mx-auto space-y-8">
+      <div className="bg-surface rounded-2xl p-8 shadow-sm text-center">
+        <div className="text-6xl mb-4">🌱</div>
+        <h1 className="text-3xl font-heading font-bold text-foreground mb-3">Seed Database</h1>
+        <p className="text-foreground/70 text-lg">
           Migrate existing projects from constants to the database
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Database className="w-5 h-5 mr-2" />
-            Project Migration
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-foreground/70">
-            This will migrate the hardcoded FEATURED_PROJECTS from <code>lib/constants.ts</code> 
+      <div className="bg-surface rounded-2xl p-8 shadow-sm">
+        <div className="flex items-center mb-6">
+          <Database className="w-6 h-6 mr-3 text-accent-alt" />
+          <h2 className="text-xl font-heading font-bold text-foreground">Project Migration</h2>
+        </div>
+        <div className="space-y-6">
+          <p className="text-base text-foreground/80 leading-relaxed">
+            This will migrate the hardcoded FEATURED_PROJECTS from <code className="bg-background px-2 py-1 rounded font-mono text-sm">lib/constants.ts</code> 
             into your Supabase database. This should only be done once during initial setup.
           </p>
 
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-md p-4">
-            <div className="flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-              <div className="text-sm">
-                <p className="font-medium text-amber-700 dark:text-amber-400">Warning</p>
-                <p className="text-amber-600 dark:text-amber-300 mt-1">
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+            <div className="flex items-start space-x-4">
+              <AlertCircle className="w-6 h-6 text-amber-600 mt-1 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-amber-800 text-base mb-2">Important Notice</p>
+                <p className="text-amber-700 leading-relaxed">
                   Only run this if you haven't added any projects through the admin panel yet.
                   This will skip seeding if projects already exist in the database.
                 </p>
@@ -69,29 +68,29 @@ export default function SeedPage() {
           </div>
 
           {seedResult && (
-            <div className={`rounded-md p-4 ${
+            <div className={`rounded-xl p-6 ${
               seedResult.success 
-                ? 'bg-green-500/10 border border-green-500/20' 
-                : 'bg-red-500/10 border border-red-500/20'
+                ? 'bg-green-50 border border-green-200' 
+                : 'bg-red-50 border border-red-200'
             }`}>
-              <div className="flex items-start space-x-2">
+              <div className="flex items-start space-x-4">
                 {seedResult.success ? (
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0" />
                 ) : (
-                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <AlertCircle className="w-6 h-6 text-red-600 mt-1 flex-shrink-0" />
                 )}
-                <div className="text-sm">
-                  <p className={`font-medium ${
+                <div>
+                  <p className={`font-semibold text-base mb-2 ${
                     seedResult.success 
-                      ? 'text-green-700 dark:text-green-400' 
-                      : 'text-red-700 dark:text-red-400'
+                      ? 'text-green-800' 
+                      : 'text-red-800'
                   }`}>
-                    {seedResult.success ? 'Success' : 'Error'}
+                    {seedResult.success ? 'Success! 🎉' : 'Error ❌'}
                   </p>
-                  <p className={`mt-1 ${
+                  <p className={`leading-relaxed ${
                     seedResult.success 
-                      ? 'text-green-600 dark:text-green-300' 
-                      : 'text-red-600 dark:text-red-300'
+                      ? 'text-green-700' 
+                      : 'text-red-700'
                   }`}>
                     {seedResult.message}
                   </p>
@@ -100,24 +99,27 @@ export default function SeedPage() {
             </div>
           )}
 
-          <div className="flex space-x-3">
+          <div className="flex space-x-4">
             <Button
               onClick={handleSeed}
               disabled={isSeeding}
-              className="btn-primary"
+              className="px-8 py-3 bg-accent-alt hover:bg-accent-alt/90 text-white border-0 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:scale-105"
             >
-              {isSeeding && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {isSeeding ? 'Seeding...' : 'Seed Projects'}
+              {isSeeding && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
+              {isSeeding ? 'Seeding Projects...' : '🌱 Seed Projects'}
             </Button>
             
-            <Button variant="outline" asChild>
+            <Button 
+              asChild
+              className="px-8 py-3 bg-background hover:bg-foreground/5 text-foreground border-0 rounded-xl font-medium"
+            >
               <Link href="/admin">
                 Back to Dashboard
               </Link>
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 } 

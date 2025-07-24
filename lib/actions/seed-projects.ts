@@ -1,14 +1,12 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import { FEATURED_PROJECTS } from '@/lib/constants'
 
 export async function seedProjects() {
   try {
-    console.log('Starting project seeding...')
-
     // Check if projects already exist
-    const { data: existingProjects, error: checkError } = await supabase
+    const { data: existingProjects, error: checkError } = await supabaseAdmin
       .from('projects')
       .select('id')
       .limit(1)
@@ -19,7 +17,6 @@ export async function seedProjects() {
     }
 
     if (existingProjects && existingProjects.length > 0) {
-      console.log('Projects already exist, skipping seed')
       return { success: true, message: 'Projects already exist' }
     }
 
@@ -36,9 +33,7 @@ export async function seedProjects() {
       image_url: project.imageUrl,
     }))
 
-    console.log('Inserting projects:', projectsToInsert)
-
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('projects')
       .insert(projectsToInsert)
       .select()
@@ -48,7 +43,6 @@ export async function seedProjects() {
       throw new Error('Failed to insert projects')
     }
 
-    console.log('Successfully seeded projects:', data)
     return { 
       success: true, 
       message: `Successfully seeded ${data?.length || 0} projects`,

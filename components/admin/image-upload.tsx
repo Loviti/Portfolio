@@ -32,20 +32,32 @@ export default function ImageUpload({ value, onChange, projectId }: ImageUploadP
     setIsUploading(true)
 
     try {
-      // For now, we'll create a placeholder URL
-      // TODO: Implement actual Supabase Storage upload
-      
-      // Simulate upload delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Create a temporary URL for demo purposes
-      const tempUrl = URL.createObjectURL(file)
-      onChange(tempUrl)
-      
+      // Create form data for upload
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('projectId', projectId || 'temp')
+      if (value) {
+        formData.append('existingImageUrl', value)
+      }
+
+      // Upload via API route
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Upload failed')
+      }
+
+      onChange(result.url)
       toast.success('Image uploaded successfully!')
+      
     } catch (error) {
       console.error('Upload error:', error)
-      toast.error('Failed to upload image')
+      toast.error(error instanceof Error ? error.message : 'Failed to upload image')
     } finally {
       setIsUploading(false)
     }

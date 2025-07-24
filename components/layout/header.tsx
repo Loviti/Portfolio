@@ -64,12 +64,12 @@ export default function Header() {
                 <nav className="bg-foreground text-background px-12 py-4 rounded-3xl shadow-lg backdrop-blur-sm">
           <div className="flex items-center space-x-16">
             {/* Logo/Name */}
-            <button
-              onClick={() => scrollToSection('#hero')}
-              className="font-heading font-bold text-lg hover:text-primary transition-colors"
+            <a
+              href="/"
+              className="font-heading font-bold text-lg hover:text-primary transition-colors cursor-pointer"
             >
               {DEVELOPER_INFO.name}
-            </button>
+            </a>
 
             {/* Navigation Items */}
             <div className="flex items-center space-x-10">
@@ -113,12 +113,12 @@ export default function Header() {
         <div className="bg-foreground text-background px-4 py-3 rounded-3xl shadow-lg backdrop-blur-sm">
           <div className="flex items-center justify-between">
             {/* Logo/Name */}
-            <button
-              onClick={() => scrollToSection('#hero')}
-              className="font-heading font-bold text-lg hover:text-primary transition-colors"
+            <a
+              href="/"
+              className="font-heading font-bold text-lg hover:text-primary transition-colors cursor-pointer"
             >
               {DEVELOPER_INFO.name}
-            </button>
+            </a>
 
             {/* Mobile Menu Button */}
             <Button

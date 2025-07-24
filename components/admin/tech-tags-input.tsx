@@ -40,56 +40,55 @@ export default function TechTagsInput({ value = [], onChange }: TechTagsInputPro
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center space-x-2">
+    <div className="space-y-4">
+      <div className="flex items-center space-x-3">
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Type a technology and press Enter"
-          className="flex-1"
+          className="flex-1 h-12 bg-background border-0 rounded-xl text-base px-4"
         />
         <Button
           type="button"
           size="sm"
           onClick={() => addTag(inputValue)}
           disabled={!inputValue.trim()}
-          variant="outline"
+          className="bg-accent-alt/10 hover:bg-accent-alt/20 text-accent-alt border-0 rounded-xl w-12 h-12 p-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Tags Display */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         {value.map((tag, index) => (
           <Badge
             key={`${tag}-${index}`}
-            variant="secondary"
-            className="text-sm px-3 py-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+            className="text-sm px-4 py-2 bg-accent-alt/10 text-accent-alt border-0 rounded-full font-medium hover:bg-accent-alt/20 transition-colors group"
           >
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              className="ml-2 hover:text-destructive transition-colors"
+              className="ml-2 hover:text-red-500 transition-colors group-hover:scale-110"
             >
-              <X className="w-3 h-3" />
+              <X className="w-4 h-4" />
             </button>
           </Badge>
         ))}
       </div>
 
       {/* Suggestions */}
-      <div className="text-xs text-foreground/60">
-        <p className="mb-2">Common technologies:</p>
-        <div className="flex flex-wrap gap-1">
+      <div className="bg-background rounded-xl p-4">
+        <p className="text-sm font-medium text-foreground/80 mb-3">Quick add popular technologies:</p>
+        <div className="flex flex-wrap gap-2">
           {['React', 'Next.js', 'TypeScript', 'Python', 'Node.js', 'Tailwind CSS', 'Supabase', 'TensorFlow', 'Docker', 'PostgreSQL'].map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => addTag(suggestion)}
-              className="text-xs px-2 py-1 bg-foreground/5 hover:bg-foreground/10 rounded transition-colors"
+              className="text-sm px-3 py-2 bg-surface hover:bg-accent-alt/10 hover:text-accent-alt rounded-lg font-medium transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               disabled={value.includes(suggestion)}
             >
               {suggestion}
