@@ -89,7 +89,7 @@ export default function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   const [messages, setMessages] = useState<StreamingMessage[]>([
     {
       id: '1',
-      content: "Hi! I'm Builder Beaver, Chase's AI assistant! 🦫 Ask me anything about his projects, skills, or experience. What would you like to know?",
+      content: "Hi! I'm Builder Beaver, Chase's AI assistant! Ask me anything about his projects, skills, or experience. What would you like to know?",
       role: 'assistant',
       timestamp: new Date(),
       hasAnimated: true, // Initial message should not animate

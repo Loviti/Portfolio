@@ -101,30 +101,4 @@ export const NAVIGATION_ITEMS = [
   { label: "Contact", href: "#contact" },
 ] as const;
 
-// AI Chatbot pre-seeded Q&A
-export const CHATBOT_QA = [
-  {
-    question: "Who is Chase Pelky?",
-    answer: "I'm an AI-focused software developer who loves building innovative solutions that bridge cutting-edge AI technology with intuitive user experiences. I specialize in full-stack development with React, Next.js, Python, and various AI frameworks."
-  },
-  {
-    question: "What are your main skills?",
-    answer: "My primary skills include TypeScript, Next.js, React, Python, TensorFlow/PyTorch, and Supabase. I'm particularly passionate about AI prompt engineering and creating seamless user interfaces for complex AI systems."
-  },
-  {
-    question: "Tell me about the AI Cat-Guard project",
-    answer: "AI Cat-Guard is a computer vision system I built using TensorFlow on Raspberry Pi. It identifies individual cats using a Litter-Robot and tracks their health metrics. This project increased vet diagnostic speed by 33% and showcases my ability to apply AI to real-world problems."
-  },
-  {
-    question: "What about the RFQ Fast-Track project?",
-    answer: "RFQ Fast-Track is a React application I developed for automotive supplier Rassini. It streamlines their Request for Quote process, cutting preparation time from 2 hours down to just 15 minutes. The project involved integrating with existing Excel workflows while providing a modern UI."
-  },
-  {
-    question: "Do you have any gaming projects?",
-    answer: "Yes! I created CardCrafter, a Minecraft Fabric mod that adds a trading card game element to Minecraft. It has over 5,000 downloads and a 4.8-star rating on CurseForge. This project demonstrates my Java skills and game development experience."
-  },
-  {
-    question: "How can I contact you?",
-    answer: "You can reach me at chaselawrence06@gmail.com, connect with me on LinkedIn at linkedin.com/in/chasepelky, or check out my code on GitHub at github.com/loviti. I'm always open to discussing new opportunities and interesting projects!"
-  }
-] as const; 
+// Note: AI Chatbot now uses dynamic data from Supabase instead of pre-seeded responses 
