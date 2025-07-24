@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Loader2, Database, CheckCircle, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { seedProjects } from '@/lib/actions/seed-projects'
@@ -60,7 +60,7 @@ export default function SeedPage() {
               <div>
                 <p className="font-semibold text-amber-800 text-base mb-2">Important Notice</p>
                 <p className="text-amber-700 leading-relaxed">
-                  Only run this if you haven't added any projects through the admin panel yet.
+                  Only run this if you haven&apos;t added any projects through the admin panel yet.
                   This will skip seeding if projects already exist in the database.
                 </p>
               </div>

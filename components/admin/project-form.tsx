@@ -8,8 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2, Eye, EyeOff } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import TechTagsInput from './tech-tags-input'
 import MarkdownEditor from './markdown-editor'
@@ -37,7 +36,6 @@ export default function ProjectForm({
     formState: { errors },
     setValue,
     watch,
-    control,
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -152,7 +150,7 @@ export default function ProjectForm({
                 <p className="text-sm text-red-600 mt-2 font-medium">{errors.outcome.message}</p>
               )}
               <p className="text-sm text-foreground/60 mt-2">
-                A key achievement or metric that highlights your project's impact
+                A key achievement or metric that highlights your project&apos;s impact
               </p>
             </div>
           </div>

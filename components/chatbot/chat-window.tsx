@@ -220,7 +220,7 @@ export default function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
                     : msg
                 ))
               }
-            } catch (e) {
+            } catch {
               // Skip invalid JSON
               console.warn('Failed to parse streaming data:', data)
             }
