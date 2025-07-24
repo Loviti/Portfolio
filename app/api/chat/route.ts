@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { supabaseAdmin } from '@/lib/supabase-admin'
@@ -38,68 +40,7 @@ async function fetchRecentChatHistory(limit = 5) {
   }
 }
 
-// Tool system for AI to access data
-async function executeAskBeaverTool(query: string, parameters?: any) {
-  try {
-    // Handle different types of queries
-    if (query.toLowerCase().includes('project')) {
-      const projects = await fetchProjectsData()
-      return {
-        type: 'projects',
-        data: projects,
-        source: 'supabase.projects'
-      }
-    }
-    
-    if (query.toLowerCase().includes('skill')) {
-      return {
-        type: 'skills',
-        data: SKILLS,
-        source: 'constants.SKILLS'
-      }
-    }
-    
-    if (query.toLowerCase().includes('contact') || query.toLowerCase().includes('info')) {
-      return {
-        type: 'developer_info',
-        data: DEVELOPER_INFO,
-        source: 'constants.DEVELOPER_INFO'
-      }
-    }
-    
-    if (query.toLowerCase().includes('chat') || query.toLowerCase().includes('conversation')) {
-      const history = await fetchRecentChatHistory()
-      return {
-        type: 'chat_history',
-        data: history,
-        source: 'supabase.chat_logs'
-      }
-    }
-    
-    // Default: return general portfolio data
-    const [projects] = await Promise.all([
-      fetchProjectsData()
-    ])
-    
-    return {
-      type: 'portfolio_overview',
-      data: {
-        developer: DEVELOPER_INFO,
-        skills: SKILLS,
-        projects: projects
-      },
-      source: 'multiple_sources'
-    }
-  } catch (error) {
-    console.error('Ask-Beaver tool error:', error)
-    return {
-      type: 'error',
-      data: null,
-      source: 'error',
-      message: 'Unable to fetch data at this time'
-    }
-  }
-}
+
 
 // Generate dynamic system prompt with live data from Supabase
 async function generateSystemPrompt() {
@@ -127,15 +68,15 @@ This data is fetched fresh from Supabase for every conversation to ensure you ha
 **Skills:** ${SKILLS.join(', ')}
 
 **All Current Projects (${projects.length} total):**
-${projects.map((project: any, index: number) => `
+${projects.map((project, index: number) => `
 ${index + 1}. **${project.title}** ${project.slug ? `(${project.slug})` : ''}
-   - Description: ${project.shortDescription || project.short_desc}
-   - Details: ${project.longDescription || project.long_desc}
-   - Technologies: ${Array.isArray(project.technologies || project.tech) ? (project.technologies || project.tech).join(', ') : (project.technologies || project.tech) || 'N/A'}
+   - Description: ${(project as any).shortDescription || (project as any).short_desc}
+   - Details: ${(project as any).longDescription || (project as any).long_desc}
+   - Technologies: ${Array.isArray((project as any).technologies || (project as any).tech) ? ((project as any).technologies || (project as any).tech).join(', ') : ((project as any).technologies || (project as any).tech) || 'N/A'}
    - Outcome: ${project.outcome || 'N/A'}
-   - GitHub: ${project.githubUrl || project.repo_url || 'Private'}
-   - Demo: ${project.liveUrl || project.demo_url || 'N/A'}
-   - Created: ${project.created_at || 'N/A'}
+   - GitHub: ${(project as any).githubUrl || (project as any).repo_url || 'Private'}
+   - Demo: ${(project as any).liveUrl || (project as any).demo_url || 'N/A'}
+   - Created: ${(project as any).created_at || 'N/A'}
 `).join('')}
 
 ## Abilities
@@ -157,7 +98,7 @@ ${index + 1}. **${project.title}** ${project.slug ? `(${project.slug})` : ''}
 **Assistant:**  
 Here are Chase's current projects (pulled fresh from the database):
 
-${projects.slice(0, 4).map((p: any) => `• **${p.title}**: ${p.short_desc}`).join('\n')}
+${projects.slice(0, 4).map((p) => `• **${p.title}**: ${(p as any).short_desc}`).join('\n')}
 
 Want to gnaw into the details of any specific project?
 
@@ -301,7 +242,7 @@ export async function POST(request: NextRequest) {
         
         // Provide a more helpful fallback response using real data
         const projects = await fetchProjectsData()
-        const projectTitles = projects.map((p: any) => p.title).join(', ')
+        const projectTitles = projects.map((p) => p.title).join(', ')
         
         const fallbackResponse = `I'm having trouble with my AI connection right now, but I can still help! 
 
@@ -328,10 +269,10 @@ For detailed discussions, reach out to Chase directly at ${DEVELOPER_INFO.email}
       const projects = await fetchProjectsData()
       const recentProjects = projects.slice(0, 3)
       
-      let response = `Thanks for your message! I'm Builder Beaver, Chase's portfolio assistant.
+      const response = `Thanks for your message! I'm Builder Beaver, Chase's portfolio assistant.
 
        **Recent Projects:**
-       ${recentProjects.map((p: any) => `• **${p.title}**: ${p.short_desc}`).join('\n')}
+       ${recentProjects.map((p) => `• **${p.title}**: ${(p as any).short_desc}`).join('\n')}
 
 **Skills:** ${SKILLS.slice(0, 6).join(', ')}
 
