@@ -1,15 +1,4 @@
 {
-  "functions": {
-    "app/api/chat/route.ts": {
-      "runtime": "edge"
-    },
-    "app/api/contact/route.ts": {
-      "runtime": "edge"
-    },
-    "app/api/admin/upload/route.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
