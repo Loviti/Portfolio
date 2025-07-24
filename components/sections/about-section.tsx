@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 
 export default function AboutSection() {
   return (
-    <section id="about" className="section bg-surface">
+    <section id="about" className="section">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

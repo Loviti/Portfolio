@@ -1,8 +1,24 @@
 'use client'
 
-import { SKILLS } from '@/lib/constants'
 import { motion } from 'framer-motion'
-import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
+
+// Tech logos array
+const TECH_LOGOS = [
+  { name: "TypeScript", logo: "/images/Logos/ts-lettermark-white.svg", alt: "TypeScript" },
+  { name: "Next.js", logo: "/images/Logos/next-js-seeklogo.svg", alt: "Next.js" },
+  { name: "React", logo: "/images/Logos/react-logo-png-react-js-logo-history-design-history-and-evolution-5500x3094.png", alt: "React" },
+  { name: "Tailwind CSS", logo: "/images/Logos/tailwindcss-logotype.svg", alt: "Tailwind CSS" },
+  { name: "Framer Motion", logo: "/images/Logos/Framer_Logo_Core 1.svg", alt: "Framer Motion" },
+  { name: "Python", logo: "/images/Logos/python-logo-generic.svg", alt: "Python" },
+  { name: "TensorFlow", logo: "/images/Logos/TF_FullColor_Horizontal.svg", alt: "TensorFlow" },
+  { name: "Supabase", logo: "/images/Logos/supabase-logo-wordmark--light.svg", alt: "Supabase" },
+  { name: "PostgreSQL", logo: "/images/Logos/PostgreSQL-Logo-SVG_003.svg", alt: "PostgreSQL" },
+  { name: "Docker", logo: "/images/Logos/docker-logo-blue.svg", alt: "Docker" },
+  { name: "Git", logo: "/images/Logos/Git-Logo-Black.svg", alt: "Git" },
+  { name: "Figma", logo: "/images/Logos/Figma Wordmark (Black).svg", alt: "Figma" },
+  { name: "OpenAI", logo: "/images/Logos/OpenAI-black-wordmark.svg", alt: "OpenAI" },
+] as const;
 
 export default function SkillsSection() {
   return (
@@ -23,36 +39,43 @@ export default function SkillsSection() {
           </p>
         </motion.div>
 
+        {/* Logo Scroller */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-w-4xl mx-auto"
+          className="scroller-container"
         >
-          {SKILLS.map((skill, index) => (
-            <motion.div
-              key={skill}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              className="group"
-            >
-              <Badge
-                variant="secondary"
-                className="w-full p-3 text-center bg-surface border-2 border-border hover:border-primary transition-colors cursor-default"
-              >
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">
-                  {skill}
-                </span>
-              </Badge>
-            </motion.div>
-          ))}
+          <div className="scroller">
+            {/* First set of logos */}
+            {TECH_LOGOS.map((tech, index) => (
+              <div key={`first-${index}`} className="scroller-item">
+                <Image
+                  src={tech.logo}
+                  alt={tech.alt}
+                  width={150}
+                  height={60}
+                  className="scroller-img"
+                />
+              </div>
+            ))}
+            {/* Second set of logos for seamless loop */}
+            {TECH_LOGOS.map((tech, index) => (
+              <div key={`second-${index}`} className="scroller-item">
+                <Image
+                  src={tech.logo}
+                  alt={tech.alt}
+                  width={150}
+                  height={60}
+                  className="scroller-img"
+                />
+              </div>
+            ))}
+          </div>
         </motion.div>
 
-        {/* Mascot with hard hat - placeholder */}
+        {/* Builder Beaver */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -60,12 +83,13 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent-alt/20 border-2 border-primary/30">
-            <div className="text-3xl">🦫⛑️</div>
-          </div>
-          <p className="text-sm text-foreground/60 mt-2">
-            Builder Beaver at work!
-          </p>
+          <Image
+            src="/images/icons/beaver-arms-up.png"
+            alt="Builder Beaver at work"
+            width={120}
+            height={120}
+            className="mx-auto"
+          />
         </motion.div>
       </div>
     </section>

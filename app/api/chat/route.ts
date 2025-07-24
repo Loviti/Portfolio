@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { CHATBOT_QA } from '@/lib/constants'
 
@@ -29,34 +29,70 @@ function findBestAnswer(userMessage: string): string | null {
   return null
 }
 
+// Helper function to create a streaming response from a static string
+function createStaticStream(text: string): ReadableStream {
+  const encoder = new TextEncoder()
+  let index = 0
+  
+  return new ReadableStream({
+    start(controller) {
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          // Stream character by character for smooth effect
+          const chunk = text.slice(index, index + 1)
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`))
+          index++
+        } else {
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+          controller.close()
+          clearInterval(interval)
+        }
+      }, 30) // 30ms delay between characters for smooth typing effect
+    }
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { message } = await request.json()
     
     if (!message || typeof message !== 'string') {
-      return NextResponse.json(
-        { error: 'Message is required' },
-        { status: 400 }
+      return new Response(
+        JSON.stringify({ error: 'Message is required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
     // Validate message length
     if (message.length > 500) {
-      return NextResponse.json(
-        { error: 'Message too long' },
-        { status: 400 }
+      return new Response(
+        JSON.stringify({ error: 'Message too long' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       )
     }
-
-    let response: string
 
     // First, try to find a pre-seeded answer
     const preSeededAnswer = findBestAnswer(message)
     
     if (preSeededAnswer) {
-      response = preSeededAnswer
-    } else if (process.env.OPENAI_API_KEY) {
-      // Fallback to OpenAI if API key is available
+      // Log to Supabase (non-blocking)
+      supabase
+        .from('chat_logs')
+        .insert([{ user_message: message, bot_response: preSeededAnswer }])
+        .then(() => {})
+        .catch(console.error)
+      
+      return new Response(createStaticStream(preSeededAnswer), {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      })
+    }
+    
+    // Use OpenAI streaming if API key is available
+    if (process.env.OPENAI_API_KEY) {
       try {
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
@@ -65,7 +101,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4.1-nano',
             messages: [
               {
                 role: 'system',
@@ -88,6 +124,7 @@ export async function POST(request: NextRequest) {
             ],
             max_tokens: 150,
             temperature: 0.7,
+            stream: true,
           }),
         })
 
@@ -95,45 +132,87 @@ export async function POST(request: NextRequest) {
           throw new Error('OpenAI API error')
         }
 
-        const openaiData = await openaiResponse.json()
-        response = openaiData.choices[0]?.message?.content || 
-          "I'm having trouble right now. You can reach Chase directly at chaselawrence06@gmail.com!"
+        // Create a transform stream to process OpenAI's streaming response
+        const encoder = new TextEncoder()
+        let fullResponse = ''
+        
+        const transformStream = new TransformStream({
+          transform(chunk, controller) {
+            const decoder = new TextDecoder()
+            const text = decoder.decode(chunk)
+            const lines = text.split('\n')
+            
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const data = line.slice(6)
+                if (data === '[DONE]') {
+                  // Log complete response to Supabase (non-blocking)
+                  supabase
+                    .from('chat_logs')
+                    .insert([{ user_message: message, bot_response: fullResponse }])
+                    .then(() => {})
+                    .catch(console.error)
+                  
+                  controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+                  return
+                }
+                
+                try {
+                  const parsed = JSON.parse(data)
+                  const content = parsed.choices?.[0]?.delta?.content || ''
+                  if (content) {
+                    fullResponse += content
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                  }
+                } catch (e) {
+                  // Skip invalid JSON
+                }
+              }
+            }
+          }
+        })
+
+        return new Response(
+          openaiResponse.body?.pipeThrough(transformStream),
+          {
+            headers: {
+              'Content-Type': 'text/event-stream',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive',
+            },
+          }
+        )
 
       } catch (openaiError) {
         console.error('OpenAI error:', openaiError)
-        response = "I'm having trouble connecting right now. Feel free to reach out to Chase directly via the contact form or email!"
+        const errorResponse = "I'm having trouble connecting right now. Feel free to reach out to Chase directly via the contact form or email!"
+        
+        return new Response(createStaticStream(errorResponse), {
+          headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+          },
+        })
       }
     } else {
       // Default response when no OpenAI key is available
-      response = `Thanks for your message! I'm still learning, but you can find detailed information about Chase's work in the sections above, or reach out directly via the contact form. For specific questions about projects or skills, try asking about "AI Cat-Guard", "RFQ Fast-Track", "skills", or "contact info".`
-    }
-
-    // Log the conversation to Supabase (if configured)
-    try {
-      const { error } = await supabase
-        .from('chat_logs')
-        .insert([
-          {
-            user_message: message,
-            bot_response: response,
-          }
-        ])
+      const defaultResponse = `Thanks for your message! I'm still learning, but you can find detailed information about Chase's work in the sections above, or reach out directly via the contact form. For specific questions about projects or skills, try asking about "AI Cat-Guard", "RFQ Fast-Track", "skills", or "contact info".`
       
-      if (error && !error.message.includes('not configured')) {
-        console.error('Supabase logging error:', error)
-      }
-    } catch (supabaseError) {
-      console.error('Supabase logging error:', supabaseError)
-      // Don't fail the request if logging fails
+      return new Response(createStaticStream(defaultResponse), {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      })
     }
-
-    return NextResponse.json({ response })
 
   } catch (error) {
     console.error('Chat API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: 'Internal server error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
 } 

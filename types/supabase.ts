@@ -57,6 +57,51 @@ export interface Database {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          short_desc: string
+          long_desc: string
+          outcome: string | null
+          tech: string[]
+          repo_url: string | null
+          demo_url: string | null
+          image_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          short_desc: string
+          long_desc: string
+          outcome?: string | null
+          tech?: string[]
+          repo_url?: string | null
+          demo_url?: string | null
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          short_desc?: string
+          long_desc?: string
+          outcome?: string | null
+          tech?: string[]
+          repo_url?: string | null
+          demo_url?: string | null
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

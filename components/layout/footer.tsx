@@ -1,8 +1,12 @@
 import { DEVELOPER_INFO, SOCIAL_LINKS } from '@/lib/constants'
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail, Settings } from 'lucide-react'
+import { auth } from '@clerk/nextjs/server'
+import { SignInButton } from '@clerk/nextjs'
+import Link from 'next/link'
 
-export default function Footer() {
+export default async function Footer() {
   const currentYear = new Date().getFullYear()
+  const { userId } = await auth()
 
   return (
     <footer className="bg-foreground text-background py-12">
@@ -18,7 +22,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Social Links */}
+          {/* Social Links & Admin */}
           <div className="flex items-center space-x-6">
             <a
               href={SOCIAL_LINKS.github}
@@ -45,6 +49,23 @@ export default function Footer() {
             >
               <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </a>
+            
+            {/* Admin Button - Only show if authenticated */}
+            {userId ? (
+              <Link
+                href="/admin"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 hover:bg-primary/30 transition-colors group"
+                aria-label="Admin Panel"
+              >
+                <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 transition-colors group opacity-60">
+                  <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+              </SignInButton>
+            )}
           </div>
         </div>
       </div>

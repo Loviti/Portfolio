@@ -4,6 +4,7 @@ import { DEVELOPER_INFO } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { ArrowDown, ChevronDown } from 'lucide-react'
+import Image from 'next/image'
 
 export default function HeroSection() {
   const scrollToProjects = () => {
@@ -59,40 +60,36 @@ export default function HeroSection() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
               <Button
+                onClick={scrollToAbout}
+                className="bg-accent-alt hover:bg-accent-alt/90 text-white rounded-xl px-8 py-3 h-auto text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Learn More About Me
+              </Button>
+              <Button
                 onClick={scrollToProjects}
-                className="btn-primary text-lg px-8 py-3 h-auto"
+                className="bg-transparent hover:bg-foreground/5 text-foreground text-lg px-8 py-3 h-auto transition-all duration-200"
               >
                 View My Work
                 <ArrowDown className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                variant="outline"
-                onClick={scrollToAbout}
-                className="btn-secondary text-lg px-8 py-3 h-auto"
-              >
-                Learn More About Me
-              </Button>
             </motion.div>
           </motion.div>
 
-          {/* Mascot Placeholder */}
+          {/* Builder Beaver Mascot */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex-shrink-0"
           >
-            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-primary/20 to-accent-alt/20 flex items-center justify-center border-2 border-primary/30">
-              {/* Placeholder for Builder Beaver - will be replaced with actual SVG */}
-              <div className="text-center">
-                <div className="text-6xl mb-4">🦫</div>
-                <p className="text-sm text-foreground/60 font-medium">
-                  Builder Beaver
-                  <br />
-                  <span className="text-xs">(SVG Coming Soon)</span>
-                </p>
-              </div>
-            </div>
+            <Image
+              src="/images/icons/beaver-waving.png"
+              alt="Builder Beaver"
+              width={400}
+              height={400}
+              className="w-80 h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] object-contain"
+              priority
+            />
           </motion.div>
         </div>
       </div>

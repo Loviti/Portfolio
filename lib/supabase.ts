@@ -40,6 +40,21 @@ export type ChatLog = {
   created_at: string
 }
 
+export type Project = {
+  id: string
+  title: string
+  slug: string
+  short_desc: string
+  long_desc: string
+  outcome: string | null
+  tech: string[]
+  repo_url: string | null
+  demo_url: string | null
+  image_url: string | null
+  created_at: string
+  updated_at: string
+}
+
 // Helper function to check if Supabase is properly configured
 export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey)

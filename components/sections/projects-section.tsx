@@ -3,10 +3,11 @@
 import { motion } from 'framer-motion'
 import { FEATURED_PROJECTS } from '@/lib/constants'
 import ProjectCard from '@/components/shared/project-card'
+import Image from 'next/image'
 
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="section bg-surface">
+    <section id="projects" className="section">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,7 +41,7 @@ export default function ProjectsSection() {
           ))}
         </div>
 
-        {/* Mascot with tools - placeholder */}
+        {/* Builder Beaver */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -48,14 +49,13 @@ export default function ProjectsSection() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-accent-alt/20 border-2 border-primary/30">
-            <div className="text-4xl">🦫🔧</div>
-          </div>
-          <p className="text-sm text-foreground/60 mt-3">
-            Builder Beaver&apos;s workshop!
-            <br />
-            <span className="text-xs italic">More projects in development...</span>
-          </p>
+          <Image
+            src="/images/icons/beaver-blueprint-desk.png"
+            alt="Builder Beaver at his workshop"
+            width={120}
+            height={120}
+            className="mx-auto"
+          />
         </motion.div>
       </div>
     </section>

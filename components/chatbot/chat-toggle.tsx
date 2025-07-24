@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import ChatWindow from './chat-window'
 
 export default function ChatToggle() {
@@ -75,9 +76,20 @@ export default function ChatToggle() {
           <motion.div
             animate={{ rotate: isOpen ? 45 : 0 }}
             transition={{ duration: 0.2 }}
-            className="text-2xl text-primary-foreground"
+            className="w-8 h-8 flex items-center justify-center"
           >
-            {isOpen ? '✕' : '🦫'}
+            {isOpen ? (
+              <span className="text-2xl text-primary-foreground">✕</span>
+            ) : (
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/images/icons/builder-beaver.png"
+                  alt="Builder Beaver"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            )}
           </motion.div>
 
           {/* Notification Badge - for demonstration */}

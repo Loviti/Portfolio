@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import Image from 'next/image'
 
 import { Mail, Send, CheckCircle, AlertCircle, Github, Linkedin } from 'lucide-react'
 import { DEVELOPER_INFO, SOCIAL_LINKS } from '@/lib/constants'
@@ -80,7 +81,7 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="section bg-surface">
+    <section id="contact" className="section">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -105,7 +106,7 @@ export default function ContactSection() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="border-2 border-border hover:border-primary transition-colors">
+            <Card className="bg-white shadow-lg border-0 rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mail className="w-5 h-5 text-primary" />
@@ -123,7 +124,7 @@ export default function ContactSection() {
                       type="text"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={errors.name ? 'border-destructive' : ''}
+                      className={`rounded-lg border-2 ${errors.name ? 'border-destructive' : 'border-gray-200 focus:border-primary'}`}
                       placeholder="Your full name"
                       disabled={status === 'submitting'}
                     />
@@ -144,7 +145,7 @@ export default function ContactSection() {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={errors.email ? 'border-destructive' : ''}
+                      className={`rounded-lg border-2 ${errors.email ? 'border-destructive' : 'border-gray-200 focus:border-primary'}`}
                       placeholder="your.email@example.com"
                       disabled={status === 'submitting'}
                     />
@@ -165,6 +166,7 @@ export default function ContactSection() {
                       type="text"
                       value={formData.company}
                       onChange={handleInputChange}
+                      className="rounded-lg border-2 border-gray-200 focus:border-primary"
                       placeholder="Your company or organization"
                       disabled={status === 'submitting'}
                     />
@@ -178,7 +180,7 @@ export default function ContactSection() {
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      className={errors.message ? 'border-destructive' : ''}
+                      className={`rounded-lg border-2 ${errors.message ? 'border-destructive' : 'border-gray-200 focus:border-primary'}`}
                       placeholder="Tell me about your project or what you'd like to discuss..."
                       rows={5}
                       disabled={status === 'submitting'}
@@ -209,7 +211,7 @@ export default function ContactSection() {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    className="w-full btn-primary"
+                    className="w-full bg-accent-alt hover:bg-accent-alt/90 text-white rounded-xl px-6 py-3 text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200"
                     disabled={status === 'submitting'}
                   >
                     {status === 'submitting' ? (
@@ -245,7 +247,7 @@ export default function ContactSection() {
               <div className="space-y-4">
                 <a
                   href={SOCIAL_LINKS.email}
-                  className="flex items-center gap-3 p-4 bg-surface border-2 border-border hover:border-primary rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-white shadow-md rounded-xl transition-all duration-200 hover:shadow-lg group"
                 >
                   <Mail className="w-5 h-5 text-primary" />
                   <div>
@@ -270,7 +272,7 @@ export default function ContactSection() {
                   href={SOCIAL_LINKS.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-surface border-2 border-border hover:border-primary rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-white shadow-md rounded-xl transition-all duration-200 hover:shadow-lg group"
                 >
                   <Github className="w-5 h-5 text-primary" />
                   <div>
@@ -287,7 +289,7 @@ export default function ContactSection() {
                   href={SOCIAL_LINKS.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-surface border-2 border-border hover:border-primary rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-white shadow-md rounded-xl transition-all duration-200 hover:shadow-lg group"
                 >
                   <Linkedin className="w-5 h-5 text-primary" />
                   <div>
@@ -301,19 +303,10 @@ export default function ContactSection() {
                 </a>
               </div>
             </div>
-
-            {/* Response Time */}
-            <div className="p-6 bg-primary/10 border border-primary/20 rounded-lg">
-              <h4 className="font-semibold text-primary mb-2">Quick Response</h4>
-              <p className="text-sm text-foreground/80">
-                I typically respond to messages within 24 hours. For urgent inquiries, 
-                feel free to reach out via LinkedIn.
-              </p>
-            </div>
           </motion.div>
         </div>
 
-        {/* Mascot with mail - placeholder */}
+        {/* Builder Beaver */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -321,12 +314,13 @@ export default function ContactSection() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent-alt/20 border-2 border-primary/30">
-            <div className="text-3xl">🦫📧</div>
-          </div>
-          <p className="text-sm text-foreground/60 mt-2">
-            Builder Beaver is ready to help!
-          </p>
+          <Image
+            src="/images/icons/contact-beaver.png"
+            alt="Builder Beaver ready to help with contact"
+            width={120}
+            height={120}
+            className="mx-auto"
+          />
         </motion.div>
       </div>
     </section>
