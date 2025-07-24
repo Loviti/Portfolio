@@ -192,36 +192,85 @@ export async function POST(request: NextRequest) {
         
         const transformStream = new TransformStream({
           transform(chunk, controller) {
-            const decoder = new TextDecoder()
-            const text = decoder.decode(chunk)
-            const lines = text.split('\n')
-            
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6)
-                if (data === '[DONE]') {
-                  // Log complete response to Supabase (non-blocking)
-                  supabase
-                    .from('chat_logs')
-                    .insert([{ user_message: message, bot_response: fullResponse }])
-                    .then(() => {})
-                    .catch(console.error)
+            try {
+              const decoder = new TextDecoder('utf-8', { fatal: false })
+              const text = decoder.decode(chunk, { stream: true })
+              
+              // Log raw chunk for debugging if response seems corrupted
+              if (text.includes('�') || text.match(/[^\x00-\x7F\s]/g)) {
+                console.warn('Potentially corrupted chunk detected:', text)
+              }
+              
+              const lines = text.split('\n')
+              
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6).trim()
                   
-                  controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
-                  return
-                }
-                
-                try {
-                  const parsed = JSON.parse(data)
-                  const content = parsed.choices?.[0]?.delta?.content || ''
-                  if (content) {
-                    fullResponse += content
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                  if (data === '[DONE]') {
+                    // Validate fullResponse before logging
+                    if (fullResponse && fullResponse.length > 10 && !fullResponse.includes('�')) {
+                      void (async () => {
+                        try {
+                          await supabaseAdmin
+                            .from('chat_logs')
+                            .insert([{ user_message: message, bot_response: fullResponse }])
+                          console.log('Chat logged successfully')
+                        } catch (error) {
+                          console.error('Failed to log chat:', error)
+                        }
+                      })()
+                    } else {
+                      console.error('Skipping corrupted response logging:', { 
+                        length: fullResponse?.length, 
+                        hasCorruptChars: fullResponse?.includes('�'),
+                        preview: fullResponse?.substring(0, 100)
+                      })
+                    }
+                    
+                    controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+                    return
                   }
-                } catch {
-                  // Skip invalid JSON
+                  
+                  if (data && data !== '') {
+                    try {
+                      const parsed = JSON.parse(data)
+                      
+                      // Check for API errors
+                      if (parsed.error) {
+                        console.error('OpenAI API error in stream:', parsed.error)
+                        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                          error: `API Error: ${parsed.error.message || 'Unknown error'}` 
+                        })}\n\n`))
+                        return
+                      }
+                      
+                      const content = parsed.choices?.[0]?.delta?.content
+                      
+                      if (content && typeof content === 'string') {
+                        // Validate content is properly encoded
+                        if (!content.includes('�') && content.match(/^[\x00-\x7F\s]*$|^[\u0000-\uFFFF]*$/)) {
+                          fullResponse += content
+                          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                        } else {
+                          console.warn('Skipping potentially corrupted content chunk:', content)
+                        }
+                      }
+                    } catch (parseError) {
+                      console.error('Error parsing OpenAI chunk:', { 
+                        error: parseError, 
+                        data: data.substring(0, 200),
+                        fullData: data 
+                      })
+                    }
+                  }
                 }
               }
+            } catch (transformError) {
+              console.error('Transform stream error:', transformError)
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                error: 'Stream processing error' 
+              })}\n\n`))
             }
           }
         })
@@ -250,11 +299,16 @@ Chase has worked on projects like: ${projectTitles || 'AI Cat-Guard, RFQ Fast-Tr
 
 For detailed discussions, reach out to Chase directly at ${DEVELOPER_INFO.email}!`
         
-        // Log the fallback interaction
-        supabase
-          .from('chat_logs')
-          .insert([{ user_message: message, bot_response: fallbackResponse }])
-          .catch(console.error)
+        // Log the fallback interaction using admin client
+        void (async () => {
+          try {
+            await supabaseAdmin
+              .from('chat_logs')
+              .insert([{ user_message: message, bot_response: fallbackResponse }])
+          } catch (error) {
+            console.error('Failed to log fallback chat:', error)
+          }
+        })()
         
         return new Response(createStreamingResponse(fallbackResponse), {
           headers: {
@@ -278,11 +332,16 @@ For detailed discussions, reach out to Chase directly at ${DEVELOPER_INFO.email}
 
 For specific questions about these projects or to discuss opportunities, contact Chase at ${DEVELOPER_INFO.email}!`
 
-      // Log the interaction
-      supabase
-        .from('chat_logs')
-        .insert([{ user_message: message, bot_response: response }])
-        .catch(console.error)
+             // Log the interaction using admin client
+       void (async () => {
+         try {
+           await supabaseAdmin
+             .from('chat_logs')
+             .insert([{ user_message: message, bot_response: response }])
+         } catch (error) {
+           console.error('Failed to log default chat:', error)
+         }
+       })()
       
       return new Response(createStreamingResponse(response), {
         headers: {
