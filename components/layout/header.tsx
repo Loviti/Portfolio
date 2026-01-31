@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { NAVIGATION_ITEMS, DEVELOPER_INFO } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Header() {
   const [isVisible, setIsVisible] = useState(true)
@@ -74,14 +75,25 @@ export default function Header() {
             {/* Navigation Items */}
             <div className="flex items-center space-x-10">
               {NAVIGATION_ITEMS.filter(item => item.href !== '#contact').map((item) => (
-                <button
-                  key={item.href}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-sm font-medium hover:text-primary transition-colors relative group px-2 py-1"
-                >
-                  {item.label}
-                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-                </button>
+                item.href.startsWith('/') ? (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-sm font-medium hover:text-primary transition-colors relative group px-2 py-1"
+                  >
+                    {item.label}
+                    <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </Link>
+                ) : (
+                  <button
+                    key={item.href}
+                    onClick={() => scrollToSection(item.href)}
+                    className="text-sm font-medium hover:text-primary transition-colors relative group px-2 py-1"
+                  >
+                    {item.label}
+                    <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </button>
+                )
               ))}
             </div>
 
@@ -151,16 +163,33 @@ export default function Header() {
             <div className="bg-foreground text-background rounded-2xl shadow-xl p-6">
                              <nav className="flex flex-col space-y-4">
                  {NAVIGATION_ITEMS.filter(item => item.href !== '#contact').map((item, index) => (
-                   <motion.button
-                     key={item.href}
-                     initial={{ opacity: 0, x: -20 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     transition={{ delay: index * 0.1 }}
-                     onClick={() => scrollToSection(item.href)}
-                     className="text-left text-lg font-medium hover:text-primary transition-colors py-2 border-b border-background/20 last:border-b-0"
-                   >
-                     {item.label}
-                   </motion.button>
+                   item.href.startsWith('/') ? (
+                     <motion.div
+                       key={item.href}
+                       initial={{ opacity: 0, x: -20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: index * 0.1 }}
+                     >
+                       <Link
+                         href={item.href}
+                         onClick={() => setIsMobileMenuOpen(false)}
+                         className="block text-left text-lg font-medium hover:text-primary transition-colors py-2 border-b border-background/20"
+                       >
+                         {item.label}
+                       </Link>
+                     </motion.div>
+                   ) : (
+                     <motion.button
+                       key={item.href}
+                       initial={{ opacity: 0, x: -20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: index * 0.1 }}
+                       onClick={() => scrollToSection(item.href)}
+                       className="text-left text-lg font-medium hover:text-primary transition-colors py-2 border-b border-background/20 last:border-b-0"
+                     >
+                       {item.label}
+                     </motion.button>
+                   )
                  ))}
                  <motion.div
                    initial={{ opacity: 0, x: -20 }}
