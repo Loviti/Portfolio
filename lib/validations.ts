@@ -69,4 +69,23 @@ export const projectSchema = z.object({
   image_url: z.string().optional(),
 })
 
-export type ProjectFormData = z.infer<typeof projectSchema> 
+export type ProjectFormData = z.infer<typeof projectSchema>
+
+// Article validation schema
+export const articleSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200, 'Title must be less than 200 characters'),
+  slug: z.string()
+    .min(1, 'Slug is required')
+    .max(100, 'Slug must be less than 100 characters')
+    .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
+  author: z.string().min(1, 'Author is required').max(100, 'Author must be less than 100 characters'),
+  excerpt: z.string().min(1, 'Excerpt is required').max(500, 'Excerpt must be less than 500 characters'),
+  content: z.string().min(1, 'Content is required'),
+  tags: z.array(z.string()),
+  read_time_minutes: z.number().int().min(1, 'Must be at least 1 minute').max(120, 'Must be less than 120 minutes'),
+  published: z.boolean(),
+  published_at: z.string().nullable().optional(),
+  revision_note: z.string().max(500, 'Revision note must be less than 500 characters').optional().or(z.literal('')),
+})
+
+export type ArticleFormData = z.infer<typeof articleSchema> 

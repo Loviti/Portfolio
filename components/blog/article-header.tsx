@@ -25,6 +25,20 @@ export default function ArticleHeader({ article }: ArticleHeaderProps) {
         {formatDate(article.date)}
       </time>
 
+      {/* Revised date */}
+      {article.revisedAt && (
+        <div className="mt-1">
+          <span className="text-xs text-muted-foreground/70">
+            Updated {formatDate(article.revisedAt)}
+          </span>
+          {article.revisionNote && (
+            <p className="text-xs text-muted-foreground/60 italic mt-0.5">
+              {article.revisionNote}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Title */}
       <h1 className="font-heading text-3xl sm:text-4xl md:text-[2.75rem] font-bold text-foreground mt-4 mb-4 leading-[1.15] tracking-tight">
         {article.title}
