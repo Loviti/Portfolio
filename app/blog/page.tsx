@@ -1,23 +1,15 @@
-'use client'
-
-import { motion } from 'framer-motion'
 import { getAllArticles } from '@/lib/articles'
 import ArticleCard from '@/components/blog/article-card'
 import Link from 'next/link'
 
-export default function BlogPage() {
-  const articles = getAllArticles()
+export default async function BlogPage() {
+  const articles = await getAllArticles()
 
   return (
     <div className="min-h-screen pt-32 pb-20">
       <div className="max-w-[680px] mx-auto px-6">
         {/* Page header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
-        >
+        <div className="mb-12">
           <Link
             href="/"
             className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 mb-8"
@@ -34,13 +26,21 @@ export default function BlogPage() {
           <p className="text-muted-foreground mt-3 text-lg leading-relaxed">
             Thoughts on AI, software engineering, and building things that matter.
           </p>
-        </motion.div>
+        </div>
 
         {/* Articles list */}
         <div>
-          {articles.map((article, index) => (
-            <ArticleCard key={article.slug} article={article} index={index} />
-          ))}
+          {articles.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg">
+                No articles published yet. Check back soon!
+              </p>
+            </div>
+          ) : (
+            articles.map((article, index) => (
+              <ArticleCard key={article.slug} article={article} index={index} />
+            ))
+          )}
         </div>
       </div>
     </div>

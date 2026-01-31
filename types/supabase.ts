@@ -9,6 +9,57 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      articles: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          author: string
+          excerpt: string
+          content: string
+          tags: string[]
+          read_time_minutes: number
+          published: boolean
+          published_at: string | null
+          revised_at: string | null
+          revision_note: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          author?: string
+          excerpt: string
+          content: string
+          tags?: string[]
+          read_time_minutes?: number
+          published?: boolean
+          published_at?: string | null
+          revised_at?: string | null
+          revision_note?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          author?: string
+          excerpt?: string
+          content?: string
+          tags?: string[]
+          read_time_minutes?: number
+          published?: boolean
+          published_at?: string | null
+          revised_at?: string | null
+          revision_note?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           id: string
